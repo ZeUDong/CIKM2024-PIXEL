@@ -1,0 +1,95 @@
+INFO 29-07-24 13:30:37: Log directory: logs/pixel_resnet101_orthohash_8_cub_10_0.0001_adam/000_test_0
+INFO 29-07-24 13:30:37: {
+  "arch": "orthohash",
+  "arch_kwargs": {
+    "arch": "orthohash",
+    "nbit": 8,
+    "nclass": 200,
+    "pretrained": true,
+    "freeze_weight": false,
+    "bias": false,
+    "backbone": "resnet101",
+    "in_channels": null
+  },
+  "batch_size": 4,
+  "max_batch_size": 4,
+  "dataset": "cub",
+  "device": "cuda:0",
+  "dfolder": "",
+  "multiclass": false,
+  "dataset_kwargs": {
+    "resize": 256,
+    "crop": 224,
+    "norm": 2,
+    "evaluation_protocol": 1,
+    "use_db_as_train": false,
+    "train_ratio": 1,
+    "reset": false,
+    "separate_multiclass": false,
+    "train_skip_preprocess": false,
+    "db_skip_preprocess": false,
+    "test_skip_preprocess": false,
+    "dataset_name_suffix": "",
+    "neighbour_topk": 5,
+    "no_augmentation": false,
+    "data_folder": "",
+    "use_random_augmentation": false
+  },
+  "optim": "adam",
+  "optim_kwargs": {
+    "lr": 0.0001,
+    "momentum": 0.9,
+    "nesterov": false,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "alpha": 0.99,
+    "weight_decay": 0.0005
+  },
+  "epochs": 10,
+  "scheduler": "step",
+  "scheduler_kwargs": {
+    "step_size": 8,
+    "gamma": 0.1,
+    "milestones": "0.5,0.75",
+    "linear_init_lr": 0.001,
+    "linear_last_lr": 1e-05
+  },
+  "save_interval": 0,
+  "eval_interval": 10,
+  "shuffle_database": false,
+  "tag": "test",
+  "seed": 0,
+  "loss": "pixel",
+  "loss_param": {
+    "alpha": 1,
+    "beta": 1,
+    "s": 10,
+    "m": 0.2,
+    "method": "cosface",
+    "multiclass": false,
+    "nbit": 8,
+    "device": "cuda:0"
+  },
+  "backbone_lr_scale": 0.1,
+  "start_epoch_from": 0,
+  "resume_dir": "",
+  "save_checkpoint": false,
+  "load_from": "",
+  "save_model": false,
+  "save_best_model_only": false,
+  "discard_hash_outputs": false,
+  "benchmark": false,
+  "num_worker": -1,
+  "wandb_enable": false,
+  "disable_tqdm": false,
+  "R": 5788,
+  "distance_func": "hamming",
+  "zero_mean_eval": false,
+  "logdir": "logs/pixel_resnet101_orthohash_8_cub_10_0.0001_adam/000_test_0"
+}
+INFO 29-07-24 13:30:37: Creating Datasets
+INFO 29-07-24 13:32:05: Creating Model
+INFO 29-07-24 13:32:24: Using DataParallel Model. Device id = [0]. is_cpu=False device=cuda:0
+INFO 29-07-24 13:32:24: Preprocessing done!
