@@ -58,8 +58,6 @@ class Transformer(nn.Module):
 
 
     def forward(self, f_cv, f_attr):
-        # print(f_cv.shape, f_attr.shape)
-        #([12, 2048, 49]) torch.Size([312, 300])
         # linearly map to common dim
         h_cv = self.embed_cv(f_cv.permute(0, 2, 1))
         h_attr = self.embed_attr(f_attr)
@@ -87,16 +85,14 @@ class ArchOrthoHash(BaseArch):
         
         bias=1
         self.bias = nn.Parameter(torch.tensor(bias), requires_grad=False)
-        # nclass=200
-        # mask_bias = np.ones((1, nclass))
-        # mask_bias[:, self.seenclass.cpu().numpy()] *= -1
+
         self.mask_bias = nn.Parameter(torch.tensor(
             mask_bias, dtype=torch.float), requires_grad=False)
         # class-level semantic vectors
         self.att = nn.Parameter(F.normalize(torch.from_numpy(tr_att).float().cuda()), requires_grad=False)
         # GloVe features for attributes name
         self.V = nn.Parameter(F.normalize(torch.from_numpy(tr_w2v_att).float().cuda()), requires_grad=True)
-        #300x312 
+
         self.transformer = Transformer(
             ec_layer=1,
             dc_layer=1,
@@ -138,11 +134,11 @@ class ArchOrthoHash(BaseArch):
 
         self.attr_conv2 = nn.Conv2d(2048, n_attr, 1, 1)
         if self.dataset=='cub':
-            self.attr_emb = 512#cub
+            self.attr_emb = 512
         elif self.dataset=='awa2':
-            self.attr_emb = 512#awa2
+            self.attr_emb = 512
         elif self.dataset=='sun':
-            self.attr_emb = 512#sun
+            self.attr_emb = 512
         self.attr_fc = nn.Linear(49, self.attr_emb)
 
 
@@ -171,9 +167,7 @@ class ArchOrthoHash(BaseArch):
             Fs = Fs.reshape(shape[0], shape[1], shape[2] * shape[3])
         Fs = F.normalize(Fs, dim=1)
 
-        ### fashionSAP
-        # attributes
-        # locality-augmented visual features
+
         Trans_out,h_cv,h_attr_batch = self.transformer(Fs, self.V)
         h_cv = h_cv.reshape(h_cv.shape[0],-1)
         h_attr_batch = h_attr_batch.reshape(h_attr_batch.shape[0],-1)
@@ -190,9 +184,9 @@ class ArchOrthoHash(BaseArch):
 
         package = {}
         ## new attr contra
-        new1 = self.attr_conv(features) #bs,102,7,7
-        new1 = new1.view(new1.shape[0], new1.shape[1], -1) #bs,102,49
-        attr_embed = self.attr_fc(new1)  #bs,attr_num,512
+        new1 = self.attr_conv(features) 
+        new1 = new1.view(new1.shape[0], new1.shape[1], -1) 
+        attr_embed = self.attr_fc(new1)  
 
         package['my_img_embed'] = attr_embed.mean(2)
 

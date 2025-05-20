@@ -786,7 +786,6 @@ def main(config, gpu_transform=False, gpu_mean_transform=False, method='supervis
             if save_now and config['save_model']:
                 io.fast_save(modelsd, f'{logdir}/models/ep{ep + 1}.pth')
 
-        ###update ECCV20
         expand_U = torch.zeros(B.shape).to(device)
         expand_U[total_img_indexes, :] = U
         B = solve_dcc(B, U, expand_U, S, nbit, 200)

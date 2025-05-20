@@ -385,35 +385,27 @@ class CubDataset(Dataset):
 
 
         self.read_matdataset()
-        # bb
+   
         self.init_data()
 
-    #transzero
+
     def read_matdataset(self):
         path= os.path.join(self.root,'feature_map_ResNet_101_CUB.hdf5')
-        # tic = time.time()
+
         classnames = os.path.join(self.root,'../','xlsa17/data/CUB/allclasses.txt')
-        #读取生成文本标签的类别顺序 
+    
         with open(classnames, 'r') as f:
             lines = f.readlines()
-        print("len classnames:",len(lines))
-        nameids = [int(x.split('.')[0]) for x in lines]
-        nameindex = np.argsort(nameids)#重新排序 因为不是按顺序排序的 而这里读取的classes顺序是升序的
-        #print(nameindex)
-        #print(lines[nameindex])
-
-        #print('Expert Attr')
-        self.att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_att.npy"))
-        # print(att.shape) #200, 312
-        #self.att = torch.from_numpy(att).float().to(self.device)
         
+        nameids = [int(x.split('.')[0]) for x in lines]
+        nameindex = np.argsort(nameids)
+        self.att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_att.npy"))
+
         self.original_att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_original_att.npy"))
        
         
         self.w2v_att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_w2v_att.npy"))
-        #self.w2v_att = torch.from_numpy(w2v_att).float().to(self.device)
-        # print(self.w2v_att.shape) #312, 300
-        # bb
+ 
         self.normalize_att = self.original_att/100
 
         self.att = self.att[nameindex]
@@ -423,14 +415,10 @@ class CubDataset(Dataset):
 
         with open(os.path.join(DATA_FOLDER['cub'],"cub_attr_text.txt"), 'r') as f:
             input_attribute_text = f.readlines()
-        # with open(os.path.join(DATA_FOLDER['cub'],"cub_attr_text2.txt"), 'r') as f:
-        #     input_attribute_text = f.readlines()
-        #cub_attr_text2_words   cub_attr_text
 
         texts_processer = dataset_text_processer()
         self.text_input_ids, self.text_attention_mask, self.text_mask_labels, self.text_replace_labels = texts_processer.get_all_texts_labels(input_attribute_text)
-        # print(self.text_input_ids, self.text_attention_mask, self.text_mask_labels, self.text_replace_labels)
-        
+
         with open(os.path.join(DATA_FOLDER['cub'],"images.txt"), 'r') as f:
             lines = f.readlines()
         self.image_name2id = []
@@ -443,12 +431,11 @@ class CubDataset(Dataset):
             class_lines = f.readlines()
         for line in class_lines:
             idx,name = line.strip().split(' ')
-            #print(idx,name) #代码从0开始因此实际id会-1
             self.all_class_names.append(name)
         print("Load classes: ", len(self.all_class_names))
 
 
-        split_num = 150 #150     160-120-80
+        split_num = 150 
         seen_classes = []
         unseen_classes = []
         if 'train' in self.filename:
@@ -492,11 +479,7 @@ class CubDataset(Dataset):
         self.train_labels = np.array(self.train_labels, dtype=float)
         print(f'Number of data: {self.train_data.shape[0]}')
 
-
-        
-        ###load attr
         attr_data = []
-        #print(self.attr_path)
         with open(self.attr_path,'r') as f:
             lines = f.readlines()
             print(len(lines))
@@ -512,8 +495,8 @@ class CubDataset(Dataset):
         unseen_classes = [line.strip().split(' ')[1] for line in class_lines[150:]]
         total_classes = seen_classes+unseen_classes
         seen_id = [self.all_class_names.index(name) for name in total_classes]
-        # print(attr_data.shape, seen_id)
-        self.attr_data = attr_data[seen_id] #40x85for train 改成直接取所有类50x85
+  
+        self.attr_data = attr_data[seen_id] 
 
         mask_bias = np.ones((1, len(self.all_class_names)))
         seenclassids = [x for x in range(len(seen_classes))]
@@ -528,16 +511,13 @@ class CubDataset(Dataset):
             tuple: (image, target) where target is index of the target class.
         """
         img, target = self.train_data[index], self.train_labels[index]
-        # print(index,self.train_data[index])
-        # bb
+
         target = torch.tensor(target)
 
         img = self.loader(img)
 
-        #print("1111",img.size)
         if self.transform is not None:
             img = self.transform(img)
-        #print("2222",img.shape)
 
         text_id = self.image_name2id.index(os.path.basename(self.train_data[index]))
         
@@ -566,33 +546,23 @@ class SunDataset(Dataset):
 
         self.read_matdataset()
 
-    #transzero
     def read_matdataset(self):
-        #path= os.path.join(self.root,'feature_map_ResNet_101_SUN.hdf5')
-        # tic = time.time()
+
         classnames = os.path.join(self.root,'../','xlsa17/data/SUN/allclasses.txt')
         with open(classnames, 'r') as f:
             lines = f.readlines()
         print("len classnames:",len(lines))
         classnames = [x.strip() for x in lines]
-        #print(classnames[:5])
-        #print(self.all_class_names[:5])
+
         new_classnames = self.all_class_names
-        #print(len(new_classnames),new_classnames)
         nameindex = [new_classnames.index(name) for name in classnames]
 
-        #print(DATA_FOLDER['sun'])
         self.att = np.load(os.path.join(DATA_FOLDER['sun'],"sun_att.npy"))
-        # print(att.shape) #200, 312
-        #self.att = torch.from_numpy(att).float().to(self.device)
-        
+
         self.original_att = np.load(os.path.join(DATA_FOLDER['sun'],"sun_original_att.npy"))
        
-        
         self.w2v_att = np.load(os.path.join(DATA_FOLDER['sun'],"sun_w2v_att.npy"))
-        #self.w2v_att = torch.from_numpy(w2v_att).float().to(self.device)
-        # print(self.w2v_att.shape) #312, 300
-        # bb
+
         self.normalize_att = self.original_att/100
 
         self.att = self.att[nameindex]
@@ -605,12 +575,10 @@ class SunDataset(Dataset):
 
         texts_processer = dataset_text_processer()
         self.text_input_ids, self.text_attention_mask, self.text_mask_labels, self.text_replace_labels = texts_processer.get_all_texts_labels(input_attribute_text)
-        # print(self.text_input_ids, self.text_attention_mask, self.text_mask_labels, self.text_replace_labels)
-        
-        # 图片id
+
         with open(os.path.join(DATA_FOLDER['sun'],"SUNAttributeDB","img_paths.txt"), 'r') as f:
             lines = f.readlines()
-        self.image_name2id = [] #生成text的图片名和对应文本
+        self.image_name2id = [] 
         for line in lines:
             img_name = os.path.basename(line.strip())
             self.image_name2id.append(img_name)
@@ -619,7 +587,7 @@ class SunDataset(Dataset):
         img_paths = sio.loadmat(self.img_paths)['images']
         img_paths = [x[0][0] for x in img_paths]
         basenames = [os.path.basename(x) for x in img_paths]
-        #print(len(img_paths),img_paths[:3])
+    
         self.all_class_names = []
         self.all_dirnames = []
         for img_path in img_paths:
@@ -628,13 +596,13 @@ class SunDataset(Dataset):
                 self.all_class_names.append(dir_names[1])
             elif len(dir_names)==4:
                 self.all_class_names.append("_".join(dir_names[1:3]))
-                #print("_".join(dir_names[1:3]))
+               
             else:
                 raise Excepetion("unknown dir names len")
             self.all_dirnames.append(os.path.dirname(img_path))
 
         self.all_class_names_set = []
-        #set无序无法复现
+     
         for name in self.all_class_names:
             if name in self.all_class_names_set:
                 continue
@@ -650,15 +618,11 @@ class SunDataset(Dataset):
                 self.all_dirnames_set.append(name)
         self.all_dirnames = self.all_dirnames_set
 
-        # print(len(self.all_class_names),len(self.all_dirnames))
-        # bbb
-        #list(set([os.path.dirname(img_path) ))
-        #print(len(self.all_class_names),self.all_class_names[:3])
-        #bb
+
         print("Load classes: ", len(self.all_class_names))
 
 
-        split_num = 500#500    574-430-287
+        split_num = 500
         seen_classes = []
         unseen_classes = []
         if 'train' in self.filename:
@@ -837,9 +801,6 @@ class InstanceDiscriminationDataset(BaseDataset):
         out = self.ds.__getitem__(index)
         img, target = out[:2]  # exclude index
 
-        # if self.tmode == 'simclr':
-        #     aug_imgs = [img, self.augment_image(img)]
-        # else:
         if self.weak_mode != 0:
             aug_imgs = [self.weak_augment_image(img), self.augment_image(img)]
         else:
