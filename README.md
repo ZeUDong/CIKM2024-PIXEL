@@ -1,6 +1,5 @@
 
 # CIKM2024-PIXEL
------------------
 
 Our implementation is built upon the open-source [Fast Image Retrieval (FIRe) framework](https://github.com/CISiPLab/cisip-FIRe), with modifications made to the data loader to accommodate zero-shot hashing tasks. And other modifications to make our improvement, such as mutli-modal data input, loss design, etc.
 
