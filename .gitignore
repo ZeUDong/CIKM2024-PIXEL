@@ -1,0 +1,17 @@
+.idea/
+data/*
+badcase_output/*
+logs/*
+csvs
+csvs/
+*.csv
+*.xlsx
+*.ipynb
+*.pth
+*.zip
+logs/
+__pycache__/
+.DS_Store
+*.png
+*.jpg
+*.pdf
