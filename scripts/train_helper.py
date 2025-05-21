@@ -223,7 +223,7 @@ def prepare_dataloader(config,
         train_paths = train_dataset.train_data
 
         transzero_att = train_dataset.att
-        transzero_w2v_att = train_dataset.w2v_att
+        # transzero_w2v_att = train_dataset.w2v_att
         mask_bias = train_dataset.mask_bias
         text_input_ids, text_attention_mask, text_mask_labels, text_replace_labels = \
                 train_dataset.text_input_ids, train_dataset.text_attention_mask, train_dataset.text_mask_labels, train_dataset.text_replace_labels
@@ -302,7 +302,7 @@ def prepare_dataloader(config,
                                    workers=workers,
                                    seed=seed)
 
-    return train_loader, test_loader, db_loader, attr_data, train_labels,num_train,train_paths, transzero_att,transzero_w2v_att,mask_bias
+    return train_loader, test_loader, db_loader, attr_data, train_labels,num_train,train_paths, transzero_att,mask_bias
 
 
 def prepare_model(config, device: torch.device):

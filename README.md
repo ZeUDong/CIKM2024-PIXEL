@@ -29,12 +29,17 @@ Download the awa2, cub, sun official data and put into data/, and download [xlas
     ├── SUN/
     ├── xlsa17/
 ```
+then run some scripts to prepare data.
 
+```
+python scripts/get_allclasses.py
+
+```
 
 ## Train
 
 ```
-python train.py --config configs/templates/pixel.yaml --ds awa2/cub/sun --nbit 24/48/64/128
+python train.py --config configs/templates/pixel.yaml --ds awa2/cub/sun --nbit 24/48/64/128 --R 5000
 ```
 
 

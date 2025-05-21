@@ -92,7 +92,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', help="configuration file *.yml", type=str, required=False, default='configs/templates/orthocos.yaml')
     parser.add_argument('--backbone', default='resnet101', type=str, help='the backbone feature extractor')
-    parser.add_argument('--ds', default='imagenet100', choices=[dataset for key in constants.datasets
+    parser.add_argument('--ds', default='cub', choices=[dataset for key in constants.datasets
                                                                 for dataset in constants.datasets[key]], help='dataset')
     parser.add_argument('--dfolder', default='', help='data folder')
     parser.add_argument('--c10-ep', default=1, type=int, choices=[1, 2], help='cifar10 evaluation protocol')
@@ -100,10 +100,10 @@ if __name__ == "__main__":
     parser.add_argument('--usedb', default=False, action='store_true', help='make all database images as training data')
     parser.add_argument('--train-ratio', default=1, type=float, help='training ratio (useful when usedb is activated)')
     parser.add_argument('--nbit', default=64, type=int, help='number of bits for hash codes')
-    parser.add_argument('--bs', default=12, type=int, help='batch size')
-    parser.add_argument('--maxbs', default=12, type=int, help='maximum batch size for testing, by default it is max(bs * 4, maxbs)')
-    parser.add_argument('--epochs', default=10, type=int, help='training epochs')
-    parser.add_argument('--arch', default='', type=str, help='architecture for the hash function')
+    parser.add_argument('--bs', default=16, type=int, help='batch size')
+    parser.add_argument('--maxbs', default=16, type=int, help='maximum batch size for testing, by default it is max(bs * 4, maxbs)')
+    parser.add_argument('--epochs', default=9, type=int, help='training epochs')
+    parser.add_argument('--arch', default='pixel', type=str, help='architecture for the hash function')
     parser.add_argument('--gpu-transform', default=False, action='store_true')
     parser.add_argument('--gpu-mean-transform', default=False, action='store_true')
     parser.add_argument('--no-aug', default=False, action='store_true', help='whether to skip augmentation')

@@ -487,13 +487,13 @@ def main(config, gpu_transform=False, gpu_mean_transform=False, method='supervis
     ##### dataset preparation #####
     workers = 1 if config['dataset'] in ['gldv2delgembed'] else config['num_worker']
     train_loader, test_loader, db_loader,attr_data,train_labels,num_train,train_paths,\
-        tr_att,tr_w2v_att,mask_bias = prepare_dataloader(config,
+        tr_att,mask_bias = prepare_dataloader(config,
                                                               gpu_transform=gpu_transform,
                                                               gpu_mean_transform=gpu_mean_transform,
                                                               workers=workers, seed=config['seed'])
     
     config['tr_att'] = tr_att
-    config['tr_w2v_att'] = tr_w2v_att
+    # config['tr_w2v_att'] = tr_w2v_att
     config['mask_bias'] = mask_bias
     
    
@@ -602,7 +602,7 @@ def main(config, gpu_transform=False, gpu_mean_transform=False, method='supervis
     for it in range(niters):
 
         train_loader, test_loader, db_loader,attr_data,train_labels,num_train,train_paths,\
-            transzero_att,transzero_w2v_att,mask_bias = prepare_dataloader(config,
+            transzero_att,mask_bias = prepare_dataloader(config,
                                                         gpu_transform=gpu_transform,
                                                         gpu_mean_transform=gpu_mean_transform,
                                                         workers=workers, seed=config['seed'])

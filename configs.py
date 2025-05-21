@@ -366,7 +366,7 @@ def dataset(config, filename, transform_mode,
         if transform_mode == 'train':
             transform = compose_transform('train', 0, crop, 2, [
                 transforms.RandomResizedCrop(crop),
-                transforms.RandomHorizontalFlip()
+                transforms.RandomHorizontalFlip(),
             ])
         else:
             transform = compose_transform('test', resize, crop, 2)

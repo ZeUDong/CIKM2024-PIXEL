@@ -54,15 +54,13 @@ class PIXELLoss(BaseClassificationLoss):
             nattr = 312 
             nattr_embed = 512 
             max_words = 180
-            self.lambda_reg = 0.005
-            self.w_tr = 0.5
-            self.w_se = 4 
+            self.w_tr = 0.5#0.5-1922
+            self.w_se = 2.5#2.5-1922
         elif kwargs['dataset']=='awa2':
             nclass=50
             nattr = 85 
             nattr_embed = 512 
             max_words = 180
-            self.lambda_reg = 0.007
             self.w_tr = 0.5
             self.w_se = 3
         elif kwargs['dataset']=='sun':
@@ -70,7 +68,6 @@ class PIXELLoss(BaseClassificationLoss):
             nattr = 102 
             nattr_embed = 512 
             max_words = 180 
-            self.lambda_reg = 0.5
             self.w_tr = 0.3
             self.w_se = 1
 
@@ -100,27 +97,7 @@ class PIXELLoss(BaseClassificationLoss):
 
         self.alpha = torch.nn.Parameter(torch.Tensor([1]), requires_grad=True)
 
-    def compute_reg_loss(self, in_package):
-        att = in_package['att']
-        
-        tgt = torch.matmul(in_package['batch_label'], att)
 
-        embed = in_package['embed']
-        loss_reg = F.mse_loss(embed, tgt, reduction='mean')
-        return loss_reg
-    
-    def compute_loss_transzero(self, in_package):
-        if len(in_package['batch_label'].size()) == 1:
-            in_package['batch_label'] = self.weight_ce[in_package['batch_label']]
-
-        loss_reg = self.compute_reg_loss(in_package)
-
-
-        loss = self.lambda_reg * loss_reg #w_ita*loss_ita + 
-        #lambda_ * loss_cal +  \ #lambda_reg * loss_reg +
-            
-        return loss
-    
     def get_hamming_distance(self):
         assert self.weight is not None, 'please set weights before calling this function'
 
@@ -169,72 +146,6 @@ class PIXELLoss(BaseClassificationLoss):
         new_logits = torch.cat([logits, new_logits], dim=1)
         return new_logits, new_labels
 
-
-    def new_contra_loss(self, x1,x2,y,margin=2.0):
-        cos_similarity = F.cosine_similarity(x1, x2,dim=0)
-        loss_contrastive = torch.mean((1-y) * torch.pow(cos_similarity, 2) +
-                                      (y) * torch.pow(torch.clamp(margin - cos_similarity, min=0.0), 2))
-        return loss_contrastive
-
-    def attr_contra_loss(self, attr_embed, attr_labels, cls_labels, pos_th):
-        bs = attr_embed.shape[0]
-        attr_dim = attr_embed.shape[1]
-
-        attr_labels = attr_labels.t()
-        data_attr_labels = attr_labels[cls_labels]  
-
-        loss = 0
-        count = 0
-        count1 = 0
-        for i in range(attr_dim):
-            matched = [0 for _ in range(bs)] 
-            for j in range(bs-1):
-                if matched[j]==1:
-                    continue
-                for k in range(j+1,bs):
-                    if matched[k]==1:
-                        continue
-                    else:
-                        embed1 = attr_embed[j][i]
-                        embed2 = attr_embed[k][i]
-                        label = 0
-                        if torch.abs(data_attr_labels[j][i]-data_attr_labels[k][i])<pos_th:
-                            label = 1
-                            count1+=1
-                        loss_one = self.new_contra_loss(embed1, embed2, label)
-               
-                        loss+=loss_one
-                        count+=1
-                        matched[k]=1
-                        if count > bs*3:
-                            return loss/max(count,1)
-
-        loss = loss/max(count,1)
-        return loss
-
-    def compute_loss_fashion_text(self, text_input_ids, attention_mask, mask_labels, replace_labels):
-
-        # fashion text embedding
-        text_input_ids = text_input_ids.cuda()
-        attention_mask = attention_mask.cuda()
-        mask_labels = mask_labels.cuda()
-        replace_labels = replace_labels.cuda()
-        text_output = self.text_encoder(text_input_ids, attention_mask = attention_mask,                      
-                                        return_dict = True, mode = 'text')            
-        text_embeds = text_output.last_hidden_state
-        # text_feat = F.normalize(self.combine_text_proj(self.text_proj(text_embeds[:,0,:])), dim=-1)
-       
-        fusion_embeds = text_embeds
-        replace_embedding = fusion_embeds
-        mask_logit = self.decoder_layer(fusion_embeds)
-        replace_logit = self.replace_predict_layer(replace_embedding)
-        crossentropy_func = nn.CrossEntropyLoss()
-
-        mask_loss = crossentropy_func(mask_logit.view(-1,self.bert_config.vocab_size), mask_labels.view(-1))
-
-        replace_loss = crossentropy_func(replace_logit.view(-1, 2), replace_labels.view(-1))
-
-        return mask_loss, replace_loss
 
 
     def compute_loss_semantics_dist(self, img_attr_embeds, text_input_ids, text_attention_mask, labels):
