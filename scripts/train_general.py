@@ -602,7 +602,7 @@ def main(config, gpu_transform=False, gpu_mean_transform=False, method='supervis
     for it in range(niters):
 
         train_loader, test_loader, db_loader,attr_data,train_labels,num_train,train_paths,\
-            transzero_att,mask_bias = prepare_dataloader(config,
+            tr_att,mask_bias = prepare_dataloader(config,
                                                         gpu_transform=gpu_transform,
                                                         gpu_mean_transform=gpu_mean_transform,
                                                         workers=workers, seed=config['seed'])

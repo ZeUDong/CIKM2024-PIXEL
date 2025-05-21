@@ -20,7 +20,7 @@ Please head up to [Get Started Docs](https://fast-image-retrieval.readthedocs.io
 |SUN Attribute|sun|
 
 ## Data Prepare
-Download the awa2, cub, sun official data and put into data/, and download [xlas17](https://www.kaggle.com/datasets/pokiajh/xlsa17) put there, too. For trainval stanard split.
+Download the awa2, cub, sun official data and put into data/, and download [xlas17](http://datasets.d2.mpi-inf.mpg.de/xian/xlsa17.zip) put there, too. For zero-shot task stanard split.
 
 ```plaintext
 ├── data/
@@ -33,7 +33,7 @@ then run some scripts to prepare data.
 
 ```
 python scripts/get_allclasses.py
-
+python scripts/make_att_npy.py
 ```
 
 ## Train
