@@ -30,7 +30,7 @@ DATA_FOLDER = {
     'gldv2': 'data/gldv2delgembed',
     'roxf': 'data/roxford5kdelgembed',
     'rpar': 'data/rparis5kdelgembed',
-    'awa2': 'data/AwA2/Animals_with_Attributes2',
+    'awa2': 'data/AwA2/',
     'cub': 'data/CUB_200_2011',
     'sun': 'data/SUN/'
 }
@@ -198,18 +198,19 @@ class AwA2Dataset(Dataset):
         self.filename = filename
         self.loader = pil_loader
         self.root = os.path.expanduser(root)
+
         #unseen 20%
-        self.seen_class_path = os.path.join(self.root, 'trainclasses.txt')
-        self.unseen_class_path = os.path.join(self.root, 'testclasses.txt')
+        self.seen_class_path = os.path.join(self.root, 'Animals_with_Attributes2','trainclasses.txt')
+        self.unseen_class_path = os.path.join(self.root, 'Animals_with_Attributes2','testclasses.txt')
         # #unseen 40%
         # self.seen_class_path = os.path.join(self.root, 'trainclasses40.txt')
         # self.unseen_class_path = os.path.join(self.root, 'testclasses40.txt')
         # #unseen 60%
         # self.seen_class_path = os.path.join(self.root, 'trainclasses60.txt')
         # self.unseen_class_path = os.path.join(self.root, 'testclasses60.txt')
-        self.img_dir = os.path.join(self.root,"JPEGImages")
-        self.class_id_path = os.path.join(self.root,"classes.txt")
-        self.attr_path = os.path.join(self.root,"predicate-matrix-continuous.txt")
+        self.img_dir = os.path.join(self.root,'Animals_with_Attributes2',"JPEGImages")
+        self.class_id_path = os.path.join(self.root,'Animals_with_Attributes2',"classes.txt")
+        self.attr_path = os.path.join(self.root,'Animals_with_Attributes2',"predicate-matrix-continuous.txt")
 
         self.all_class_names = []
         self.use_classes = []
@@ -218,41 +219,33 @@ class AwA2Dataset(Dataset):
         self.init_data()
 
     def read_matdataset(self):
-        classnames = os.path.join(self.root,'../../','xlsa17/data/AWA2/allclasses.txt')
+        classnames = os.path.join(self.root,'../','xlsa17/data/AWA2/allclasses.txt')
         with open(classnames, 'r') as f:
             lines = f.readlines()
         print("len classnames:",len(lines))
    
         classnames = [x.strip() for x in lines]
 
-        new_classnames = os.path.join(self.root,'classes.txt')
+        new_classnames = os.path.join(self.root,'Animals_with_Attributes2','classes.txt')
         with open(new_classnames, 'r') as f:
             lines = f.readlines()
         print("len new_classnames:",len(lines))
         new_classnames = [x.strip().split('\t')[1] for x in lines]
         nameindex = [new_classnames.index(name) for name in classnames]
 
-        self.att = np.load(os.path.join(DATA_FOLDER['awa2'],"../","awa2_att.npy"))
+        self.att = np.load(os.path.join(DATA_FOLDER['awa2'],"awa2_att.npy"))
 
-        self.original_att = np.load(os.path.join(DATA_FOLDER['awa2'],"../","awa2_original_att.npy"))
-       
-        
-        self.w2v_att = np.load(os.path.join(DATA_FOLDER['awa2'],"../","awa2_w2v_att.npy"))
-
-        self.normalize_att = self.original_att/100
 
         self.att = self.att[nameindex]
-        self.original_att = self.original_att[nameindex]
-        self.normalize_att = self.normalize_att[nameindex]
 
-        with open(os.path.join(DATA_FOLDER['awa2'],"../","awa2_attr_text.txt"), 'r') as f:
+        with open(os.path.join(DATA_FOLDER['awa2'],"awa2_attr_text.txt"), 'r') as f:
             input_attribute_text = f.readlines()
 
 
         texts_processer = dataset_text_processer()
         self.text_input_ids, self.text_attention_mask, self.text_mask_labels, self.text_replace_labels = texts_processer.get_all_texts_labels(input_attribute_text)
 
-        with open(os.path.join(DATA_FOLDER['awa2'],"../","AwA2-filenames.txt"), 'r') as f:
+        with open(os.path.join(DATA_FOLDER['awa2'],"AwA2-filenames.txt"), 'r') as f:
             lines = f.readlines()
         self.image_name2id = []
         for line in lines:
@@ -295,7 +288,7 @@ class AwA2Dataset(Dataset):
         self.train_data = []
         self.train_labels = []
         for classname in total_classes:
-            class_dir = os.path.join(self.root,'JPEGImages',classname)
+            class_dir = os.path.join(self.root,'Animals_with_Attributes2','JPEGImages',classname)
             img_names = os.listdir(class_dir)
             random.shuffle(img_names)
             if 'database' in self.filename:
@@ -311,11 +304,10 @@ class AwA2Dataset(Dataset):
                 self.train_labels.append(img_label)
         
         self.train_data = np.array(self.train_data)
-        self.train_labels = np.array(self.train_labels, dtype=np.float)
+        self.train_labels = np.array(self.train_labels, dtype=np.float32)
         print(f'Number of data: {self.train_data.shape[0]}')
 
 
-        ###load attr
         attr_data = []
         with open(self.attr_path,'r') as f:
             lines = f.readlines()
@@ -326,7 +318,7 @@ class AwA2Dataset(Dataset):
                 std_dev = np.std(values)
                 standardized_array = (values - mean) / std_dev
                 attr_data.append(standardized_array)
-        attr_data = np.array(attr_data) #50x85
+        attr_data = np.array(attr_data) 
 
         with open(self.seen_class_path, 'r') as f:
             lines = f.readlines()

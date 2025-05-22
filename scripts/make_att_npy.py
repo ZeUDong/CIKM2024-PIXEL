@@ -8,7 +8,7 @@ import os
 split_path = './data/xlsa17/data/AWA2/att_splits.mat'
 matcontent = sio.loadmat(split_path)
 att = matcontent['att'].T
-np.save("data/awa2/awa2_att.npy", att)
+np.save("data/AwA2/awa2_att.npy", att)
 
 
 split_path = './data/xlsa17/data/CUB/att_splits.mat'

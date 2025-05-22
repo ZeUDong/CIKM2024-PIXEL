@@ -54,15 +54,15 @@ class PIXELLoss(BaseClassificationLoss):
             nattr = 312 
             nattr_embed = 512 
             max_words = 180
-            self.w_tr = 0.5#0.5-1922
-            self.w_se = 2.5#2.5-1922
+            self.w_tr = 0.5
+            self.w_se = 2.5
         elif kwargs['dataset']=='awa2':
             nclass=50
             nattr = 85 
             nattr_embed = 512 
             max_words = 180
-            self.w_tr = 0.5
-            self.w_se = 3
+            self.w_tr = 0.4 
+            self.w_se = 3   
         elif kwargs['dataset']=='sun':
             nclass=717
             nattr = 102 

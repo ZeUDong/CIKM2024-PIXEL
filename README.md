@@ -24,8 +24,15 @@ Download the awa2, cub, sun official data and put into data/, and download [xlas
 
 ```plaintext
 ├── data/
-    ├── awa2/
+    ├── AwA2/
+		├── Animals_with_Attributes2/
+		├── AwA2-filenames.txt
+		├── ...
     ├── CUB_200_2011/
+		├── attributes/
+		├── images/
+		├── classes.txt
+		├── ...
     ├── SUN/
     ├── xlsa17/
 ```
@@ -34,6 +41,10 @@ then run some scripts to prepare data.
 ```
 python scripts/get_allclasses.py
 python scripts/make_att_npy.py
+
+get_attr_awa2.py
+get_attr_cub.py
+get_attr_sun.py
 ```
 
 ## Train
