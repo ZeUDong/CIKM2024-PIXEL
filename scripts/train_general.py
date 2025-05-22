@@ -707,7 +707,7 @@ def main(config, gpu_transform=False, gpu_mean_transform=False, method='supervis
                 plt.savefig('tsne.png', dpi=120)
                 plt.savefig("tsne.pdf", dpi=600,format="pdf")
                 pr_auc = pr_curve(test_out['codes'],db_out['codes'],test_out['labels'],db_out['labels'])
-                #for P@N curve   R@N curve
+                # for P@N curve   R@N curve
                 pr_curve(test_out['codes'],db_out['codes'],test_out['labels'],db_out['labels'],topK=1000)
                 print("---[AUC] ",pr_auc)
                 

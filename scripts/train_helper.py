@@ -223,7 +223,6 @@ def prepare_dataloader(config,
         train_paths = train_dataset.train_data
 
         tr_att = train_dataset.att
-        # transzero_w2v_att = train_dataset.w2v_att
         mask_bias = train_dataset.mask_bias
         text_input_ids, text_attention_mask, text_mask_labels, text_replace_labels = \
                 train_dataset.text_input_ids, train_dataset.text_attention_mask, train_dataset.text_mask_labels, train_dataset.text_replace_labels
@@ -249,8 +248,7 @@ def prepare_dataloader(config,
                                                           weak_mode=0)
     else:
         train_dataset = None
-    #print(include_train,dataset_type) True  ''
-    
+
     separate_multiclass = config['dataset_kwargs'].get('separate_multiclass', False)
     config['dataset_kwargs']['separate_multiclass'] = False
     return_id = config['dataset'] in ['landmark']

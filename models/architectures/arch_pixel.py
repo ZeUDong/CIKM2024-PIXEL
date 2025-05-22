@@ -80,7 +80,6 @@ class ArchPixel(BaseArch):
         self.dataset = config['dataset']
  
         tr_att = config['tr_att']
-        # tr_w2v_att = config['tr_w2v_att'] 
         mask_bias = config['mask_bias'] 
         
         bias=1
@@ -90,8 +89,6 @@ class ArchPixel(BaseArch):
             mask_bias, dtype=torch.float), requires_grad=False)
         # class-level semantic vectors
         self.att = nn.Parameter(F.normalize(torch.from_numpy(tr_att).float().cuda()), requires_grad=False)
-        # GloVe features for attributes name
-        # self.V = nn.Parameter(F.normalize(torch.from_numpy(tr_w2v_att).float().cuda()), requires_grad=True)
 
         self.transformer = Transformer(
             ec_layer=1,

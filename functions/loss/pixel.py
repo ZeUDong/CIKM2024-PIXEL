@@ -68,8 +68,8 @@ class PIXELLoss(BaseClassificationLoss):
             nattr = 102 
             nattr_embed = 512 
             max_words = 180 
-            self.w_tr = 0.3
-            self.w_se = 1
+            self.w_tr = 0.3 
+            self.w_se = 2   
 
 
 

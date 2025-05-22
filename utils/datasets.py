@@ -382,7 +382,6 @@ class CubDataset(Dataset):
 
 
     def read_matdataset(self):
-        # path= os.path.join(self.root,'feature_map_ResNet_101_CUB.hdf5')
 
         classnames = os.path.join(self.root,'../','xlsa17/data/CUB/allclasses.txt')
     
@@ -393,17 +392,7 @@ class CubDataset(Dataset):
         nameindex = np.argsort(nameids)
         self.att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_att.npy"))
 
-        # self.original_att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_original_att.npy"))
-       
-        
-        # self.w2v_att = np.load(os.path.join(DATA_FOLDER['cub'],"cub_w2v_att.npy"))
- 
-        # self.normalize_att = self.original_att/100
-
         self.att = self.att[nameindex]
-        # self.original_att = self.original_att[nameindex]
-        # self.normalize_att = self.normalize_att[nameindex]
-
 
         with open(os.path.join(DATA_FOLDER['cub'],"cub_attr_text.txt"), 'r') as f:
             input_attribute_text = f.readlines()
@@ -551,15 +540,9 @@ class SunDataset(Dataset):
 
         self.att = np.load(os.path.join(DATA_FOLDER['sun'],"sun_att.npy"))
 
-        self.original_att = np.load(os.path.join(DATA_FOLDER['sun'],"sun_original_att.npy"))
-       
-        self.w2v_att = np.load(os.path.join(DATA_FOLDER['sun'],"sun_w2v_att.npy"))
-
-        self.normalize_att = self.original_att/100
 
         self.att = self.att[nameindex]
-        self.original_att = self.original_att[nameindex]
-        self.normalize_att = self.normalize_att[nameindex]
+
 
         with open(os.path.join(DATA_FOLDER['sun'],"sun_attr_text.txt"), 'r') as f:
             input_attribute_text = f.readlines()
@@ -658,7 +641,7 @@ class SunDataset(Dataset):
         
         self.train_data = np.array(self.train_data)
 
-        self.train_labels = np.array(self.train_labels, dtype=np.float)
+        self.train_labels = np.array(self.train_labels, dtype=np.float32)
         print(f'Number of data: {self.train_data.shape[0]}')
 
 
